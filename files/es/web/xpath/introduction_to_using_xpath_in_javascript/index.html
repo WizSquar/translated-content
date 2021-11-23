@@ -35,23 +35,23 @@ original_slug: Web/JavaScript/Introduction_to_using_XPath_in_JavaScript
 
 <h3 id="Return_Value" name="Return_Value">Valor regresado</h3>
 
-<p>Regresa <code>xpathResult</code>, que es un objeto <code>XPathResult</code> del tipo especificado en el parámetro <code>resultType</code>. La interfaz <code>XPathResult</code> está definida en{{ Source("dom/interfaces/xpath/nsIDOMXPathResult.idl", "here") }}.</p>
+<p>Regresa <code>xpathResult</code>, que es un objeto <code>XPathResult</code> del tipo especificado en el parámetro <code>resultType</code>. La interfaz <code>XPathResult</code> está definida {{ Source("dom/interfaces/xpath/nsIDOMXPathResult.idl", "aquí") }}.</p>
 
 <h3 id="Implementing_a_Default_Namespace_Resolver" name="Implementing_a_Default_Namespace_Resolver">Implementando un Solucionador de Namespace predefinido</h3>
 
-<p>Nosotros creamos un solucionador de namespace usando el método <code>createNSResolver</code> del objeto <a href="/en/DOM/document" title="en/DOM/document">document</a>.</p>
+<p>Se puede crear un solucionador de namespace usando el método <code>createNSResolver</code> del objeto <a href="/en/DOM/document" title="en/DOM/document">document</a>.</p>
 
 <pre class="brush: js">var nsResolver = document.createNSResolver( contextNode.ownerDocument == null ? contextNode.documentElement : contextNode.ownerDocument.documentElement );
 </pre>
 
-<p><span class="comment">O alternativamente, usar el método <code>createNSResolver</code> de un objeto<code> XPathEvaluator</code>. </span></p>
+<p><span class="comment">O, alternativamente, se puede usar el método <code>createNSResolver</code> de un objeto<code> XPathEvaluator</code>. </span></p>
 
 <pre><span class="comment">var xpEvaluator = new XPathEvaluator();
 var nsResolver = xpEvaluator.createNSResolver( contextNode.ownerDocument == null ? contextNode.documentElement : contextNode.ownerDocument.documentElement ); </span></pre>
 
 <p>Y entonces pasar a <code>document.evaluate</code> la variable <code>nsResolver</code>, como el parámetro <code>namespaceResolver</code>.</p>
 
-<p>Nota: XPath define QNames sin un prefijo sólo al igualar elementos en el namespace null. No hay manera en XPath de tomar el namespace predefinido tal como se aplica a un elemento de referencia regular (e.g., <code>p[@id='_myid']</code> for <code><span class="nowiki">xmlns='http://www.w3.org/1999/xhtml</span>'</code>). Para igualar elementos predefinidos en un namespace no-nulo, , se tiene que hacer refencia a un elemento en particular usando una forma como <code>['namespace-uri()='<span class="nowiki">http://www.w3.org/1999/xhtml</span>' and name()='p' and @id='_myid']</code> (este enfoque funciona bien para expresiones XPath dinámicas donde el namespace puede ser dessconocido) o usar un nombre de prueba prefijado, y crear un solucionador de namespace mapeando el prefijo al namespace. Lee más sobre como crear un solucionador de namespace definido por el usuario, si deseas tomar el último enfoque.</p>
+<p>Nota: XPath define QNames sin un prefijo sólo al igualar elementos en el namespace null. No hay manera en XPath de tomar el namespace predefinido tal como se aplica a un elemento de referencia regular (e.g., <code>p[@id='_myid']</code> para <code><span class="nowiki">xmlns='http://www.w3.org/1999/xhtml</span>'</code>). Para igualar elementos predefinidos en un namespace no-nulo, se tiene que hacer refencia a un elemento en particular usando una forma como <code>['namespace-uri()='<span class="nowiki">http://www.w3.org/1999/xhtml</span>' and name()='p' and @id='_myid']</code> (este enfoque funciona bien para expresiones XPath dinámicas donde el namespace puede ser desconocido) o usar un nombre de prueba prefijado, y crear un solucionador de namespace mapeando el prefijo al namespace. Lee más sobre como crear un solucionador de namespace definido por el usuario, si deseas tomar el último enfoque.</p>
 
 <h3 id="Notes" name="Notes">Notas</h3>
 
@@ -119,7 +119,7 @@ alert( 'This document contains ' + paragraphCount.stringValue + ' paragraph elem
 
 <p>Una vez que hemos iterado sobre todos los nodos individuales coincidentes,<code> iterateNext()</code> regresará <code>null</code>.</p>
 
-<p>Es importante señalar que si el documento se ha transformado (el arbol del documento se ha modificado) entre iteraciones </p>
+<p>Es importante señalar que si el documento se ha transformado (el árbol del documento se ha modificado) entre iteraciones, se lanzará una <pre>DOMException</pre>. </p>
 
 <h6 id="Iterator_Example" name="Iterator_Example">Iterator Example</h6>
 
@@ -132,64 +132,62 @@ try {
     alert( thisNode.textContent );
     thisNode = iterator.iterateNext();
   }
-}
-catch (e) {
+} catch (e) {
   dump( 'Error: Document tree modified during iteration ' + e );
 }
 </pre>
 
-<h5 id="Snapshots" name="Snapshots">Snapshots</h5>
+<h5 id="Snapshots" name="Snapshots">Instantáneas (Snapshots)</h5>
 
-<p>When the specified result type in the <code>resultType</code> parameter is either:</p>
+<p>Cuando el tipo de resultado especificado en el parámetro <code>resultType</code> es:</p>
 
 <ul>
  <li><code>UNORDERED_NODE_SNAPSHOT_TYPE</code></li>
  <li><code>ORDERED_NODE_SNAPSHOT_TYPE</code></li>
 </ul>
 
-<p>The <code>XPathResult</code> object returned is a static node-set of matched nodes, which allows us to access each node through the <code>snapshotItem(itemNumber)</code> method of the <code>XPathResult</code> object, where <code>itemNumber</code> is the index of the node to be retrieved. The total number of nodes contained can be accessed through the <code>snapshotLength</code> property.</p>
+<p>El objeto <code>XPathResult</code> devuelto es un conjunto estático de nodos coincidentes, que nos permite acceder a cada nodo a través del método <code>snapshotItem(itemNumber)</code> del objeto <code>XPathResult</code>, donde <code>itemNumber</code> es el índice del nodo que se va a recuperar. Se puede acceder al número total de nodos contenidos a través de la propiedad <code>snapshotLength</code>.</p>
 
-<p>Snapshots do not change with document mutations, so unlike the iterators the snapshot does not become invalid, but it may not correspond to the current document, for example the nodes may have been moved, it might contain nodes that no longer exist, or new nodes could have been added.</p>
+<p>Las instantáneas no cambian con las mutaciones del documento, por lo que, a diferencia de los iteradores, la instantánea no se vuelve inválida, pero puede que no corresponda con el documento actual. Por ejemplo, los nodos pueden haberse movido, puede contener nodos que ya no existen, o se podrían haber agregado nuevos nodos.</p>
 
-<h6 id="Snapshot_Example" name="Snapshot_Example">Snapshot Example</h6>
+<h6 id="Snapshot_Example" name="Snapshot_Example">Ejemplo de Instantánea</h6>
 
 <pre class="brush: js">var nodesSnapshot = document.evaluate('//phoneNumber', documentNode, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null );
 
-for ( var i=0 ; i &lt; nodesSnapshot.snapshotLength; i++ )
-{
+for ( var i=0 ; i &lt; nodesSnapshot.snapshotLength; i++ ) {
   dump( nodesSnapshot.snapshotItem(i).textContent );
 }
 </pre>
 
-<h5 id="First_Node" name="First_Node">First Node</h5>
+<h5 id="First_Node" name="First_Node">Primer nodo</h5>
 
-<p>When the specified result type in the <code>resultType</code> parameter is either:</p>
+<p>Cuando el tipo de resultado especificado en el parámetro <code>resultType</code> es:</p>
 
 <ul>
  <li><code>ANY_UNORDERED_NODE_TYPE</code></li>
  <li><code>FIRST_ORDERED_NODE_TYPE</code></li>
 </ul>
 
-<p>The <code>XPathResult</code> object returned is only the first found node that matched the XPath expression. This can be accessed through the <code>singleNodeValue</code> property of the <code>XPathResult</code> object. This will be <code>null</code> if the node set is empty.</p>
+<p>El objeto <code>XPathResult</code> devuelto es solo el primer nodo encontrado que coincide con la expresión XPath. Se puede acceder a éste a través de la propiedad <code>singleNodeValue</code> del objeto <code>XPathResult</code>. Será <code>null</code> si el conjunto de nodos está vacío.</p>
 
-<p>Note that, for the unordered subtype the single node returned might not be the first in document order, but for the ordered subtype you are guaranteed to get the first matched node in the document order.</p>
+<p>Tenga en cuenta que, para el subtipo desordenado, el nodo único devuelto podría no ser el primero en el orden del documento, pero para el subtipo ordenado tiene la garantía de obtener el primer nodo coincidente en el orden del documento.</p>
 
-<h6 id="First_Node_Example" name="First_Node_Example">First Node Example</h6>
+<h6 id="First_Node_Example" name="First_Node_Example">Ejemplo de primer nodo</h6>
 
 <pre class="brush: js">var firstPhoneNumber = document.evaluate('//phoneNumber', documentNode, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null );
 
 dump( 'The first phone number found is ' + firstPhoneNumber.singleNodeValue.textContent );
 </pre>
 
-<h4 id="The_ANY_TYPE_Constant" name="The_ANY_TYPE_Constant">The ANY_TYPE Constant</h4>
+<h4 id="The_ANY_TYPE_Constant" name="The_ANY_TYPE_Constant">La constante ANY_TYPE</h4>
 
-<p>When the result type in the <code>resultType</code> parameter is specified as <code>ANY_TYPE</code>, the <code>XPathResult</code> object returned, will be whatever type that naturally results from the evaluation of the expression.</p>
+<p>Cuando el tipo de resultado en el parámetro <code>resultType</code> se especifica como <code>ANY_TYPE</code>, el objeto <code>XPathResult</code> devuelto será el tipo que resulte naturalmente de la evaluación de la expresión.</p>
 
-<p>It could be any of the simple types (<code>NUMBER_TYPE, STRING_TYPE, BOOLEAN_TYPE</code>), <strong>but</strong>, if the returned result type is a node-set then it will <strong>only</strong> be an <code>UNORDERED_NODE_ITERATOR_TYPE</code>.</p>
+<p>Podría ser cualquiera de los tipos simples (<code>NUMBER_TYPE, STRING_TYPE, BOOLEAN_TYPE</code>), <strong>pero</strong> si el tipo de resultado devuelto es un conjunto de nodos, entonces será <strong>solo</strong> un <code>UNORDERED_NODE_ITERATOR_TYPE</code>.</p>
 
-<p>To determine that type after evaluation, we use the <code>resultType</code> property of the <code>XPathResult</code> object. The <a href="#XPathResult_Defined_Constants">constant</a> values of this property are defined in the appendix. <span class="comment">None Yet =====Any_Type Example===== &lt;pre&gt; &lt;/pre&gt;</span></p>
+<p>Para determinar ese tipo después de la evaluación, se usará la propiedad <code>resultType</code> del objeto <code>XPathResult</code>. Los valores <a href="#XPathResult_Defined_Constants">constantes</a> de esta propiedad se definen en el apéndice.</p>
 
-<h2 id="Examples" name="Examples">Examples</h2>
+<h2 id="Examples" name="Examples">Ejemplos</h2>
 
 <h3 id="Within_an_HTML_Document" name="Within_an_HTML_Document">Within an HTML Document</h3>
 
